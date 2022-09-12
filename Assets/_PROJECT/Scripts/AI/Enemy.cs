@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
+using Random = UnityEngine.Random;
 
 
 namespace PacMan.AI
 {
-
-    public class Enemy: MonoBehaviour
+    public class Enemy : MonoBehaviour, IFixedTickable
     {
-       float speed = 1;
-       private Vector3 currentDirection;
-        private void FixedUpdate()
-        {
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-        }
+        float speed = 3;
+        private Vector3 currentDirection = Vector3.forward;
 
 
         private void OnCollisionEnter(Collision other)
         {
-            if (other.transform.CompareTag(Keys.Tag.WALL))
+            if (other.transform.CompareTag(Keys.Tag.WALL) || other.transform.CompareTag(Keys.Tag.ENEMY))
             {
-                
+                currentDirection = DrawDirection(currentDirection);
+                Debug.Log(currentDirection);
             }
         }
 
@@ -30,8 +27,14 @@ namespace PacMan.AI
             List<Vector3> directions = new List<Vector3>()
                 { Vector3.forward, Vector3.back, Vector3.left, Vector3.right };
             directions.Remove(currentDirection);
-            int r = Random
-            return directions[]
+            int r = Random.Range(0, directions.Count);
+            Debug.Log(r);
+            return directions[r];
+        }
+
+        public void FixedTick()
+        {
+            transform.Translate(currentDirection * speed * Time.deltaTime);
         }
     }
 }

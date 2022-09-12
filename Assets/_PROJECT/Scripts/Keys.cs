@@ -9,5 +9,6 @@ namespace PacMan.Keys
     public class Tag
     {
         public const string WALL = "Wall";
+        public const string ENEMY = "Enemy";
     }
 }
