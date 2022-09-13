@@ -2,7 +2,7 @@
 using Signals;
 using Zenject;
 
-namespace Installer
+namespace PacMan.Installers
 {
     public class SignalSystemInstaller : MonoInstaller
     {

@@ -4,7 +4,7 @@ namespace PacMan.Keys
 {
     public class Keys
     {
-        
+        public const string GAME_SCENE_NAME = "Playground";
     }
     public class Tag
     {
