@@ -26,6 +26,8 @@ namespace PacMan.Core
         private int currentLevel = -1;
         private List<EnemySpawnPoint> enemySpawns = new List<EnemySpawnPoint>();
 
+       
+
         public int CurrentLevel
         {
             get
@@ -51,6 +53,22 @@ namespace PacMan.Core
             this.endGameView = endGameView;
             this.sceneManager = sceneManager;
             this.enemySpawns = enemySpawns;
+        }
+        
+        public void RegisterSeed(Seed seed)
+        {
+            seeds.Add(seed);
+        }
+
+        public void UnRegisterSeed(Seed seed)
+        {
+            seeds.Remove(seed);
+            CheckGameCondition();
+        }
+        public void RestartGame()
+        {
+            PlayerPrefs.SetInt(Key.LIFE_PREFS_NAME, Values.PLAYER_LIFE);
+            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
         }
 
         private void SubscribeSignals()
@@ -127,7 +145,6 @@ namespace PacMan.Core
 
         private void OnPlayerDead()
         {
-            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
             UnSubscribeSignals();
             UnLockCursor();
             endGameView.ShowLosePanel();
@@ -138,17 +155,7 @@ namespace PacMan.Core
             signalSystem.UnsubscribeSignal<PlayerDeadSignal>(OnPlayerDead);
         }
 
-        public void RegisterSeed(Seed seed)
-        {
-            seeds.Add(seed);
-        }
-
-        public void UnRegisterSeed(Seed seed)
-        {
-            seeds.Remove(seed);
-            CheckGameCondition();
-        }
-
+        
 
         private void CheckGameCondition()
         {

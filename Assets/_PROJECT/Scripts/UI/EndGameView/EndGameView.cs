@@ -1,4 +1,5 @@
-﻿using PacMan.Keys;
+﻿using PacMan.Core;
+using PacMan.Keys;
 using PacMan.SceneManagement;
 using TMPro;
 using UnityEngine;
@@ -9,12 +10,13 @@ namespace PacMan.UI
     public class EndGameView : MonoBehaviour, IEndGameView, EndGameViewInput
     {
         [Inject] private ISceneManager sceneManager;
+        [Inject] private IGameManager gameManager;
         [SerializeField] private Transform content;
         [SerializeField] private TextMeshProUGUI gameResultText;
 
         public void RestartGame()
         {
-            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
+            gameManager.RestartGame();
             sceneManager.RestartGame();
         }
 

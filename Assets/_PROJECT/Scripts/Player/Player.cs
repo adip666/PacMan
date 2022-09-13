@@ -1,8 +1,10 @@
-﻿using Signals;
+﻿using PacMan.Keys;
+using Signals;
 using SignalsSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
+using Key = PacMan.Keys.Key;
 
 namespace PacMan.Player
 {
@@ -11,13 +13,14 @@ namespace PacMan.Player
         [SerializeField] private PlayerInput input;
         [SerializeField] private CharacterController controller;
         private ISignalSystem signalSystem;
-        private int currentLife = 3;
+        private int currentLife = -1;
 
         private Vector3 startPosition;
 
         private void Start()
         {
             startPosition = transform.position;
+            currentLife = LoadLife();
             signalSystem.FireSignal(new PlayerLifeChangedSignal(currentLife));
             signalSystem.SubscribeSignal<EndGameSignal>(OnGameEnd);
         }
@@ -28,10 +31,17 @@ namespace PacMan.Player
             this.signalSystem = signalSystem;
         }
 
+        private int LoadLife()
+        {
+            return PlayerPrefs.GetInt(Key.LIFE_PREFS_NAME);
+        }
+
         public void AddDamage()
         {
             currentLife--;
             signalSystem.FireSignal(new PlayerLifeChangedSignal(currentLife));
+            PlayerPrefs.SetInt(Key.LIFE_PREFS_NAME, currentLife);
+
             if (currentLife == 0)
             {
                 Die();
