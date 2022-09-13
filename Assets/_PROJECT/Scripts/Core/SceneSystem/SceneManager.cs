@@ -1,5 +1,4 @@
-﻿using UnityEngine.SceneManagement;
-
+﻿
 namespace PacMan.SceneManagement
 {
     public class SceneManager : ISceneManager

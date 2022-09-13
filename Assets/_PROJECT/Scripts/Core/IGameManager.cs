@@ -7,6 +7,8 @@ namespace PacMan.Core
          void RegisterSeed(Seed seed);
          void UnRegisterSeed(Seed seed);
 
+         void RestartGame();
+
          int CurrentLevel { get; }
     }
 }

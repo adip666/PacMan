@@ -29,7 +29,7 @@ namespace PacMan.AI
         
         private void OnCollisionEnter(Collision other)
         {
-            if (other.transform.CompareTag(Keys.Tag.WALL) || other.transform.CompareTag(Keys.Tag.ENEMY))
+            if (IsNeedChangeDirection(other))
             {
                 currentDirection = DrawDirection(currentDirection);
             }
@@ -43,10 +43,17 @@ namespace PacMan.AI
 
         private void OnCollisionStay(Collision other)
         {
-            if (other.transform.CompareTag(Keys.Tag.WALL) || other.transform.CompareTag(Keys.Tag.ENEMY))
+            if (IsNeedChangeDirection(other))
             {
                 currentDirection = DrawDirection(currentDirection);
             }
+        }
+
+        private bool IsNeedChangeDirection(Collision other)
+        {
+            return other.transform.CompareTag(Keys.Tag.WALL) ||
+                   other.transform.CompareTag(Keys.Tag.ENEMY)|| 
+                   other.transform.CompareTag(Keys.Tag.SAFE_PLACES);
         }
 
         Vector3 DrawDirection(Vector3 currentDirection)

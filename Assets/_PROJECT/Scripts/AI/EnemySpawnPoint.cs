@@ -1,7 +1,10 @@
 using PacMan.Keys;
 using UnityEngine;
 
-public class EnemySpawnPoint : MonoBehaviour
+namespace PacMan.AI
 {
-    public Levels spawnAtLevel;
+    public class EnemySpawnPoint : MonoBehaviour
+    {
+        public Levels spawnAtLevel;
+    }
 }

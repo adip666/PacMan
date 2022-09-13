@@ -1,4 +1,4 @@
-
+using PacMan.Keys;
 using PacMan.SceneManagement;
 using UnityEngine;
 using Zenject;
@@ -17,8 +17,9 @@ namespace PacMan.UI
 
         public void StartGame()
         {
-            PlayerPrefs.SetInt(Keys.Key.LEVEL_PREFS_NAME, 1);
-            sceneManager.LoadScene(Keys.Key.GAME_SCENE_NAME);
+            PlayerPrefs.SetInt(Key.LIFE_PREFS_NAME, Values.PLAYER_LIFE);
+            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
+            sceneManager.LoadScene(Key.GAME_SCENE_NAME);
         }
 
         public void Quit()

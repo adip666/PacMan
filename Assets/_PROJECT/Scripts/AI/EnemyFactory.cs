@@ -1,8 +1,6 @@
-﻿using PacMan.AI;
-using UnityEngine;
-using Zenject;
+﻿using Zenject;
 
-namespace PacMan.Installers
+namespace PacMan.AI
 {
     public class EnemyFactory<T> : PlaceholderFactory<T>
     {
