@@ -1,4 +1,4 @@
-﻿namespace PacMan.Keys.UI
+﻿namespace PacMan.UI
 {
     public interface MainMenuViewInput
     {

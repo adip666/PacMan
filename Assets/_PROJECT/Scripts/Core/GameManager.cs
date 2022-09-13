@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PacMan.AI;
 using PacMan.Installers;
+using PacMan.UI;
 using Signals;
 using SignalsSystem;
 using UnityEngine;
@@ -12,17 +13,19 @@ namespace PacMan.Core
 {
     public class GameManager : MonoBehaviour, IGameManager
     {
+        private readonly List<IEnemy> enemies = new List<IEnemy>();
         private  EnemyFactory<Enemy> spawner;
         private  ISignalSystem signalSystem;
-        private readonly List<IEnemy> enemies = new List<IEnemy>();
+        private IEndGameView endGameView;
         
         private const int enemyCount = 5;
 
         [Inject]
-        public void Inject(EnemyFactory<Enemy> spawner, ISignalSystem signalSystem)
+        public void Inject(EnemyFactory<Enemy> spawner, ISignalSystem signalSystem, IEndGameView endGameView)
         {
             this.spawner = spawner;
             this.signalSystem = signalSystem;
+            this.endGameView = endGameView;
         }
 
         private void SubscribeSignals()
@@ -32,8 +35,30 @@ namespace PacMan.Core
 
         private void Start()
         {
+            if (!CursorIsLocked())
+            {
+                LockCursor();
+            }
+            
             SubscribeSignals();
             StartCoroutine(SpawnEnemy());
+        }
+
+        private bool CursorIsLocked()
+        {
+            return Cursor.lockState == CursorLockMode.Locked;
+        }
+
+        private void LockCursor()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        
+        private void UnLockCursor()
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
 
         private IEnumerator SpawnEnemy()
@@ -56,7 +81,8 @@ namespace PacMan.Core
         private void OnPlayerDead()
         {
             UnSubscribeSignals();
-            Time.timeScale = 0;
+            UnLockCursor();
+            endGameView.ShowLosePanel();
         }
         
         private void UnSubscribeSignals()

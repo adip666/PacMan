@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-
+﻿
 namespace PacMan.Keys
 {
-    public class Keys
+    public class Key
     {
         public const string GAME_SCENE_NAME = "Playground";
+        public const string MAIN_MENU_SCENE_NAME = "MainMenu";
     }
     public class Tag
     {

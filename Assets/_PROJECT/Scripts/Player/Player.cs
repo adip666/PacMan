@@ -1,15 +1,22 @@
 ﻿using Signals;
 using SignalsSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
 
 namespace PacMan.Player
 {
     public class Player : MonoBehaviour, IPlayer
     {
+        [SerializeField] private PlayerInput input;
+        
         private  ISignalSystem signalSystem;
-        private int life = 3;
-       
+        private int currentLife = 3;
+        private void Start()
+        {
+            signalSystem.FireSignal(new PlayerLifeChangedSignal(currentLife));
+        }
+
         [Inject]
         public void Inject(ISignalSystem signalSystem)
         {
@@ -18,9 +25,9 @@ namespace PacMan.Player
         
         public void AddDamage()
         {
-            life--;
-            signalSystem.FireSignal(new PlayerLifeChangedSignal(life));
-            if (life < 0)
+            currentLife--;
+            signalSystem.FireSignal(new PlayerLifeChangedSignal(currentLife));
+            if (currentLife == 0)
             {
                 Die();
             }
@@ -28,6 +35,7 @@ namespace PacMan.Player
 
         private void Die()
         {
+            input.enabled = false;
             signalSystem.FireSignal<PlayerDeadSignal>();
         }
     }
