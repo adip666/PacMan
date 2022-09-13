@@ -10,5 +10,6 @@ namespace PacMan.Keys
     {
         public const string WALL = "Wall";
         public const string ENEMY = "Enemy";
+        public const string PLAYER = "Player";
     }
 }
