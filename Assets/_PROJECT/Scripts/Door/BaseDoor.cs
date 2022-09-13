@@ -1,7 +1,7 @@
-﻿using System;
+﻿using PacMan.Keys;
 using UnityEngine;
 
-namespace PacMan.Keys.Door
+namespace PacMan.Door
 {
     public class BaseDoor : MonoBehaviour
     {

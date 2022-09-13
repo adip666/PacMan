@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using PacMan.AI;
-using PacMan.Installers;
 using PacMan.Keys;
 using PacMan.SceneManagement;
 using PacMan.Seeds;
@@ -17,7 +16,7 @@ namespace PacMan.Core
     public class GameManager : MonoBehaviour, IGameManager
     {
         [SerializeField] private GameSettings gameSettings;
-       
+
         private readonly List<IEnemy> enemies = new List<IEnemy>();
         private EnemyFactory<Enemy> spawner;
         private ISignalSystem signalSystem;
@@ -26,6 +25,7 @@ namespace PacMan.Core
         private List<Seed> seeds = new List<Seed>();
         private int currentLevel = -1;
         private List<EnemySpawnPoint> enemySpawns = new List<EnemySpawnPoint>();
+
         public int CurrentLevel
         {
             get
@@ -60,12 +60,13 @@ namespace PacMan.Core
 
         private void Start()
         {
-            Debug.Log("Start lvl: "+CurrentLevel);
+            Debug.Log("Start lvl: " + CurrentLevel);
             PrepareEnemySpawns();
             if (!CursorIsLocked())
             {
                 LockCursor();
             }
+
             SubscribeSignals();
             StartCoroutine(SpawnEnemy());
         }
@@ -96,7 +97,7 @@ namespace PacMan.Core
         private IEnumerator SpawnEnemy()
         {
             Levels level = CurrentLevel == 1 ? Levels.Level_1 : Levels.Level_2;
-            
+
             int enemyCount = gameSettings.GetEnemyValue(level);
             for (int i = 0; i < enemyCount; i++)
             {
@@ -122,7 +123,6 @@ namespace PacMan.Core
                     enemy.FixedTick();
                 }
             }
-           
         }
 
         private void OnPlayerDead()
@@ -187,7 +187,5 @@ namespace PacMan.Core
         {
             return seeds.Count == 0;
         }
-        
-       
     }
 }

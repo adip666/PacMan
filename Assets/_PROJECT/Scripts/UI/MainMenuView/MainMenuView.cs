@@ -1,4 +1,3 @@
-
 using PacMan.SceneManagement;
 using UnityEngine;
 using Zenject;

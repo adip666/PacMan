@@ -1,5 +1,4 @@
-﻿using System;
-using Signals;
+﻿using Signals;
 using SignalsSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,10 +10,11 @@ namespace PacMan.Player
     {
         [SerializeField] private PlayerInput input;
         [SerializeField] private CharacterController controller;
-        private  ISignalSystem signalSystem;
+        private ISignalSystem signalSystem;
         private int currentLife = 3;
 
         private Vector3 startPosition;
+
         private void Start()
         {
             startPosition = transform.position;
@@ -27,7 +27,7 @@ namespace PacMan.Player
         {
             this.signalSystem = signalSystem;
         }
-        
+
         public void AddDamage()
         {
             currentLife--;
@@ -41,6 +41,14 @@ namespace PacMan.Player
                 ResetPosition();
             }
         }
+
+        public void ChangePosition(Vector3 position)
+        {
+            controller.enabled = false;
+            transform.position = position;
+            controller.enabled = true;
+        }
+
         [ContextMenu("ResetPos")]
         private void ResetPosition()
         {
