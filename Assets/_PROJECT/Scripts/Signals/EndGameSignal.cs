@@ -2,9 +2,9 @@
 
 namespace Signals
 {
-    public class RestartGameSignal : ICustomSignal
+    public class EndGameSignal : ICustomSignal
     {
-        public RestartGameSignal()
+        public EndGameSignal()
         {
             
         }

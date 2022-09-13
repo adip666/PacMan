@@ -2,7 +2,7 @@
 using Signals;
 using Zenject;
 
-namespace Installer
+namespace PacMan.Installers
 {
     public class SignalSystemInstaller : MonoInstaller
     {
@@ -18,7 +18,7 @@ namespace Installer
             Container.DeclareSignal<PlayerLifeChangedSignal>();
             Container.DeclareSignal<PlayerDeadSignal>();
             Container.DeclareSignal<SeedCollectedSignal>();
-            Container.DeclareSignal<RestartGameSignal>();
+            Container.DeclareSignal<EndGameSignal>();
         }
     }
 }
