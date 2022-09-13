@@ -8,7 +8,6 @@ namespace PacMan.Installers
         public override void InstallBindings()
         {
             Container.Bind<ISceneManager>().To<SceneManager>().AsSingle();
-
         }
     }
 }

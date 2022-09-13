@@ -10,9 +10,12 @@ namespace PacMan.AI
     public class Enemy : MonoBehaviour, IEnemy
     {
         private IPlayer player;
-        float speed = 3;
+        [SerializeField ]float speed;
         private Vector3 currentDirection = Vector3.forward;
-
+        public float Speed
+        {
+            set => speed = value;
+        }
         [Inject]
         public void Inject(IPlayer player)
         {
@@ -23,7 +26,7 @@ namespace PacMan.AI
         {
             transform.Translate(currentDirection * speed * Time.deltaTime);
         }
-
+        
         private void OnCollisionEnter(Collision other)
         {
             if (other.transform.CompareTag(Keys.Tag.WALL) || other.transform.CompareTag(Keys.Tag.ENEMY))
@@ -36,6 +39,7 @@ namespace PacMan.AI
                 player.AddDamage();
             }
         }
+
 
         private void OnCollisionStay(Collision other)
         {
@@ -54,5 +58,7 @@ namespace PacMan.AI
 
             return directions[randomIndex];
         }
+
+        
     }
 }

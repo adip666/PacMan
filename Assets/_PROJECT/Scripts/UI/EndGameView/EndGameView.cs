@@ -1,4 +1,5 @@
-﻿using PacMan.SceneManagement;
+﻿using PacMan.Keys;
+using PacMan.SceneManagement;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -13,12 +14,13 @@ namespace PacMan.UI
 
         public void RestartGame()
         {
+            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
             sceneManager.RestartGame();
         }
 
         public void BackToMenu()
         {
-            sceneManager.LoadScene(Keys.Key.MAIN_MENU_SCENE_NAME);
+            sceneManager.LoadScene(Key.MAIN_MENU_SCENE_NAME);
         }
 
         public void ExitToWindows()

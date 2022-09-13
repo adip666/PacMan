@@ -18,7 +18,7 @@ namespace PacMan.Installers
             Container.DeclareSignal<PlayerLifeChangedSignal>();
             Container.DeclareSignal<PlayerDeadSignal>();
             Container.DeclareSignal<SeedCollectedSignal>();
-            Container.DeclareSignal<RestartGameSignal>();
+            Container.DeclareSignal<EndGameSignal>();
         }
     }
 }

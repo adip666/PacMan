@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using PacMan.AI;
 using PacMan.Installers;
+using PacMan.Keys;
+using PacMan.SceneManagement;
+using PacMan.Seeds;
 using PacMan.UI;
 using Signals;
 using SignalsSystem;
@@ -13,19 +16,41 @@ namespace PacMan.Core
 {
     public class GameManager : MonoBehaviour, IGameManager
     {
+        [SerializeField] private GameSettings gameSettings;
+       
         private readonly List<IEnemy> enemies = new List<IEnemy>();
-        private  EnemyFactory<Enemy> spawner;
-        private  ISignalSystem signalSystem;
+        private EnemyFactory<Enemy> spawner;
+        private ISignalSystem signalSystem;
         private IEndGameView endGameView;
-        
-        private const int enemyCount = 5;
+        private ISceneManager sceneManager;
+        private List<Seed> seeds = new List<Seed>();
+        private int currentLevel = -1;
+        private List<EnemySpawnPoint> enemySpawns = new List<EnemySpawnPoint>();
+        public int CurrentLevel
+        {
+            get
+            {
+                if (currentLevel == -1)
+                {
+                    currentLevel = LoadLevel();
+                }
+
+                return currentLevel;
+            }
+        }
 
         [Inject]
-        public void Inject(EnemyFactory<Enemy> spawner, ISignalSystem signalSystem, IEndGameView endGameView)
+        public void Inject(EnemyFactory<Enemy> spawner,
+            ISignalSystem signalSystem,
+            IEndGameView endGameView,
+            ISceneManager sceneManager,
+            List<EnemySpawnPoint> enemySpawns)
         {
             this.spawner = spawner;
             this.signalSystem = signalSystem;
             this.endGameView = endGameView;
+            this.sceneManager = sceneManager;
+            this.enemySpawns = enemySpawns;
         }
 
         private void SubscribeSignals()
@@ -35,13 +60,20 @@ namespace PacMan.Core
 
         private void Start()
         {
+            Debug.Log("Start lvl: "+CurrentLevel);
+            PrepareEnemySpawns();
             if (!CursorIsLocked())
             {
                 LockCursor();
             }
-            
             SubscribeSignals();
             StartCoroutine(SpawnEnemy());
+        }
+
+        private void PrepareEnemySpawns()
+        {
+            Levels spawnsToRemove = CurrentLevel == 1 ? Levels.Level_2 : Levels.Level_1;
+            enemySpawns.RemoveAll(s => s.spawnAtLevel == spawnsToRemove);
         }
 
         private bool CursorIsLocked()
@@ -54,7 +86,7 @@ namespace PacMan.Core
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        
+
         private void UnLockCursor()
         {
             Cursor.visible = true;
@@ -63,31 +95,99 @@ namespace PacMan.Core
 
         private IEnumerator SpawnEnemy()
         {
+            Levels level = CurrentLevel == 1 ? Levels.Level_1 : Levels.Level_2;
+            
+            int enemyCount = gameSettings.GetEnemyValue(level);
             for (int i = 0; i < enemyCount; i++)
             {
-                enemies.Add(spawner.Create());
+                Enemy enemy = spawner.Create();
+                enemy.transform.position = DrawStartPoint();
+                enemy.Speed = gameSettings.GetEnemySpeed(level);
+                enemies.Add(enemy);
                 yield return new WaitForSeconds(2);
             }
         }
 
+        private Vector3 DrawStartPoint()
+        {
+            return enemySpawns[Random.Range(0, enemySpawns.Count)].transform.position;
+        }
+
         private void FixedUpdate()
         {
-            foreach (var enemy in enemies)
+            if (!IsGameWin())
             {
-                enemy.FixedTick();
+                foreach (var enemy in enemies)
+                {
+                    enemy.FixedTick();
+                }
             }
+           
         }
 
         private void OnPlayerDead()
         {
+            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 1);
             UnSubscribeSignals();
             UnLockCursor();
             endGameView.ShowLosePanel();
         }
-        
+
         private void UnSubscribeSignals()
         {
             signalSystem.UnsubscribeSignal<PlayerDeadSignal>(OnPlayerDead);
         }
+
+        public void RegisterSeed(Seed seed)
+        {
+            seeds.Add(seed);
+        }
+
+        public void UnRegisterSeed(Seed seed)
+        {
+            seeds.Remove(seed);
+            CheckGameCondition();
+        }
+
+
+        private void CheckGameCondition()
+        {
+            if (IsGameWin())
+            {
+                if (CurrentLevel == 1)
+                {
+                    StartNextLevel();
+                }
+                else
+                {
+                    signalSystem.FireSignal<EndGameSignal>();
+                    UnLockCursor();
+                    endGameView.ShowWinPanel();
+                }
+            }
+        }
+
+        private void StartNextLevel()
+        {
+            PlayerPrefs.SetInt(Key.LEVEL_PREFS_NAME, 2);
+            sceneManager.RestartGame();
+        }
+
+        private int LoadLevel()
+        {
+            if (!PlayerPrefs.HasKey(Key.LEVEL_PREFS_NAME))
+            {
+                return 1;
+            }
+
+            return PlayerPrefs.GetInt(Key.LEVEL_PREFS_NAME);
+        }
+
+        private bool IsGameWin()
+        {
+            return seeds.Count == 0;
+        }
+        
+       
     }
 }

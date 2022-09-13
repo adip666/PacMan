@@ -17,6 +17,7 @@ namespace PacMan.UI
 
         public void StartGame()
         {
+            PlayerPrefs.SetInt(Keys.Key.LEVEL_PREFS_NAME, 1);
             sceneManager.LoadScene(Keys.Key.GAME_SCENE_NAME);
         }
 
